@@ -1,154 +1,180 @@
+% create_Simulationdata.m
+
 % Published: August 14, 2019
-Åã Copyright
+% Copyright
 % Lab for Neural Computation and Adaptation
 % RIKEN Center for Brain Science
-% Objective: Create the noisy sensory input signals arriving at various times taoA and tao0
+%
+% Objective: Create the noisy sensory input signals arriving at various times taoA and taoO
+
 % Cleaners
-clear % Clears all variables from the workspace
-cle % clears the command window
-close all % closes all figures (such as plots)
+clear           % clears all variables from the workspace
+cle             % clears the command window
+close all       % closes all figures (such as plots)
+
 %{
 Only if random generation should be repeatable
 rng(1,'twister');
 %}
+
 % Simulation conditions
-taoInstances = 35000; % Number of taoA and taoO instances to be generated
-ExpR = 1; numCond = 3; % Experimental set-up
-% Haggard et al. (2002): ExpR = 1; NumCond = 3; (Voluntary, Involuntary, Sham)
-% Wolpe et al. (2013) : ExpR = 2; NumCond = 3; (Low, Intermediate, High)
-tAp=0; dist_tAt0=250; tOp=tAp+dist_tAto; % Actual physical stimulus timings
+taoInstances = 35000;                               % Number of taoA and taoO instances to be generated
+ExpR = 1; numCond = 3;                              % Experimental set-up
+                                                    % Haggard et al. (2002): ExpR = 1; NumCond = 3; (Voluntary, Involuntary, Sham)
+                                                    % Wolpe et al. (2013) : ExpR = 2; NumCond = 3; (Low, Intermediate, High)
+tAp=0; dist_tAtO=250; tOp=tAp+dist_tAto;            % Actual physical stimulus timings
+
 for CondBO = 1:numCond
-% Initialize baseline parameters with reported empirical data
-[muA, sigmaA, mu0, sigma0] = soa_IBexperiment(ExpR, CondBO);
-% Generate from Gaussian distributions
-Vec_taoA = normrnd(tAp + muA, sigmaA, [1 taoInstances]); % Alterntaive: sigmaA .* randn(1,numInstances) + (tAp + muA);
-Vec_taoO = normrnd(tOp + mu0, sigma0, [1 taoInstances]); % sSigmaO .* randn(1,numInstances) + (tOp + muO);
-%{
-% Check the generated data
-figure; normplot(Vec_taoA);
-figure; normplot(Vec_tao0);
-figure; histfit(Vec_taoA);
-figure; histfit(Vec_tao0);
-%}
-% Generate statistics
-sizeVec_taoA = numel(Vec_taoA);
-sizeVec_taoO = numel(Vec_tao0);
-taoA_min = min(Vec_taoA); taoA_max = max(Vec_taoA);
-tao0O_min = min(Vec_tao0); taoO_max = max(Vec_tao0);
-uVectaoA = mean(Vec_taoA); stdVectaoA = std(Vec_taoA);
-uVectaoO = mean(Vec_tao0); stdVectaoO = std(Vec_tao0);
-% Store generated simulation data
-fprintf ('\n============== tao DataSet Exp %d Cond %d ================\n' ExpR, CondBO);
-fprintf('taoA [%0.2f, %?@.2f] taoO [%0.2f, %@.2f]\n, taoA_min, taoA_max, tao0_min, taoO_max);
-fprintf('tao statistics: %O@.2f (%@.2f)\t %@.2f (%@.2f)\n, uVectaoA, stdVectaoA, uVectao0, stdVectao0);
-fprintf('taoA elements: %d tao0 elements: %d\n, sizeVec_taoA, sizeVec_tao0);
-fnametaoA = sprintf ('Exp%dCond%d_Vec_taoA.csv',ExpR, CondBO) ;
-fnametaoO = sprintf (ÅeExp%dCond%d_Vec_tao0.csv',ExpR, CondBO) ;
-dlmwrite(fnametaoA, Vec_taoA,;delimiter',',');
-dlmwrite(fnametao0O, Vec_tao0,delimiter',',');
+    % Initialize baseline parameters with reported empirical data
+    [muA, sigmaA, mu0, sigma0] = soa_IBexperiment(ExpR, CondBO);
+    
+    % Generate from Gaussian distributions
+    Vec_taoA = normrnd(tAp + muA, sigmaA, [1 taoInstances]);    % Alterntaive: sigmaA .* randn(1,numInstances) + (tAp + muA);
+    Vec_taoO = normrnd(tOp + mu0, sigma0, [1 taoInstances]);    % sSigmaO .* randn(1,numInstances) + (tOp + muO);
+
+    %{
+    % Check the generated data
+    figure; normplot(Vec_taoA);
+    figure; normplot(Vec_taoO);
+    figure; histfit(Vec_taoA);
+    figure; histfit(Vec_taoO);
+    %}
+    
+    % Generate statistics
+    sizeVec_taoA = numel(Vec_taoA);
+    sizeVec_taoO = numel(Vec_taoO);
+    taoA_min = min(Vec_taoA); taoA_max = max(Vec_taoA);
+    taoO_min = min(Vec_taoO); taoO_max = max(Vec_taoO);
+    uVectaoA = mean(Vec_taoA); stdVectaoA = std(Vec_taoA);
+    uVectaoO = mean(Vec_taoO); stdVectaoO = std(Vec_taoO);
+
+    % Store generated simulation data
+    fprintf ('\n============== tao DataSet Exp %d Cond %d ================\n', ExpR, CondBO);
+    fprintf('taoA [%0.2f, %?@.2f] taoO [%0.2f, %@.2f]\n', taoA_min, taoA_max, taoO_min, taoO_max);
+    fprintf('tao statistics: %O@.2f (%@.2f)\t %@.2f (%@.2f)\n', uVectaoA, stdVectaoA, uVectaoO, stdVectaoO);
+    fprintf('taoA elements: %d taoO elements: %d\n', sizeVec_taoA, sizeVec_taoO);
+    fnametaoA = sprintf ('Exp%dCond%d_Vec_taoA.csv',ExpR, CondBO) ;
+    fnametaoO = sprintf ('Exp%dCond%d_Vec_taoO.csv',ExpR, CondBO) ;
+    dlmwrite(fnametaoA, Vec_taoA,'delimiter',',');
+    dlmwrite(fnametaoOO, Vec_taoO,'delimiter',',');
 end
 
 
 
 
-
+% find_muAO.m
 % Published: August 14, 2019
 % Copyright
 % Lab for Neural Computation and Adaptation
 % RIKEN Center for Brain Science
+%
 % Objective: Find the optimal value for the free parameter muAO using Haggard et al.'s data,
-% with sigmaAO equal to 1@ms.
-% Cleaners
-clear % Clears all variables from the workspace
-clc % Clears the command window
-close all % closes all figures (such as plots)
-% Simulation Conditions
-taoInstances = 35000; % Number of taoA and taoO instances to be generated
-ExpR = 1; numCond = 3; % Experimental set-up
-% Haggard et al. (2002): ExpR = 1; NumCond = 3; (Vol, Invol, Sham)
-tAp=0; dist_tAt0O=250; tOp=tAp+dist_tAto; % Actual physical stimulus timings
-SigmaAO = 10; % To obtain discernible perceptual shifts, sigmaAOQ should be small
-for muAO = [190 200 210 220 230 240 250]
-fprintf('Action and outcome perceptual shifts per condition given muA0=%d\n' muA0);
-sumError = Q;
-for CondBO = 1:numCond
-% Read from files taoA and taoO values derived from a Gaussian distribution
-fnametaoA = sprintf ('Exp%dCond%d_Vec_taoA.csv',ExpR,CondBO) ;
-fnametaoO = sprintf ('Exp%dCond%d_Vec_tao0.csv',ExpR,CondBO);
-Vec_taoA = dlmread(fnametaoA) ;
-Vec_taoO = dlmread(fnametao0);
-% Get the reported empricial baseline parameters
-[muA, sigmaA, mu0, sigmaO] = soa_IBexperiment(ExpR, CondBO);
-% Compute for sigma_Tot
-SigmaTot2 = sigmaA*2 + sigma0*2 + sigmaA0%2;
-% Compute the action and oputcome perceptual shifts
-Vec_PrcShftA = (sigmaA*2 / sigmaTot2) *Å· (Vec_tao0O - Vec_taoA - muAQ);
-Vec_PrcShftO = ?- (sigma0*2 / sigmaTot2) * (Vec_tao0 -? Vec_taoA ?- muAQ);
-uVec_PrcShftA = mean(Vec_PrcShftA); sdVec_PrcShftA = std(Vec_PrcShftA);
-uVec_PrcShftO = mean(Vec_PrcShft0); sdVec_PrcShft0O = std(Vec_PrcShft0O) ;
-ruVec_PrcShftA = round(uVec_PrcShftA); rsdVec_PrcShftA = round(sdVec_PrcShftA);
-ruVec_PrcShftO = round(uVec_PrcShft0); rsdVec_PrcShftO = round(sdVec_PrcShft0);
-% Compute for model estimation errors given the reported empirical results
-[targPrcShftA, targPrcShft0] = soa_IBTargets(ExpR,CondB0) ;
-errPrcShft = abs(ruVec_PrcShftA - targPrcShftA);
-%6{
-NOTE: Even when we consider the average of action and outcome estimation errors,
-the optimal result is the same.
-errPrcShft = (abs(ruVec_PrcShftA - targPrcShftA) + abs(ruVec_PrcShftO - targPrcShft0O))/2;
-%}
-SumError = sumError + errPrcShft;
-fprintf('Condition %d:\t %0.1f(%@.2f)\t %@.1f(%@.2f)\n,; CondBO, ruVec_PrcShftA, rsdVec_PrcShftA, ruVec_PrcShft0, rsdVec_PrcShft0);
-end
-modelEE = sumError/numCond;
-fprintf('model estimation error:\t%?.2f:\n\n,modelEE) ;
-if muAO==198 || (muA0~=190 && modelEE < min_modelEE)
-    
-    
+%            with sigmaAO equal to 10ms.
 
+% Cleaners
+clear                       % Clears all variables from the workspace
+clc                         % Clears the command window
+close all                   % closes all figures (such as plots)
+
+% Simulation Conditions
+taoInstances = 35000;                               % Number of taoA and taoO instances to be generated
+ExpR = 1; numCond = 3;                              % Experimental set-up
+                                                    % Haggard et al. (2002): ExpR = 1; NumCond = 3; (Vol, Invol, Sham)
+tAp=0; dist_tAtO=250; tOp=tAp+dist_tAto;           % Actual physical stimulus timings
+
+sigmaAO = 10;                                       % To obtain discernible perceptual shifts, sigmaAOQ should be small
+for muAO = [190 200 210 220 230 240 250]
     
+    fprintf('Action and outcome perceptual shifts per condition given muA0=%d\n', muAO);
+    sumError = 0;
     
+    for CondBO = 1:numCond
     
-min_modelEE = modelEE;
-opt_muAO = muAO;
+        % Read from files taoA and taoO values derived from a Gaussian distribution
+        fnametaoA = sprintf ('Exp%dCond%d_Vec_taoA.csv',ExpR,CondBO) ;
+        fnametaoO = sprintf ('Exp%dCond%d_Vec_taoO.csv',ExpR,CondBO);
+        Vec_taoA = dlmread(fnametaoA) ; 
+        Vec_taoO = dlmread(fnametaoO);
+    
+        % Get the reported empricial baseline parameters
+        [muA, sigmaA, mu0, sigmaO] = soa_IBexperiment(ExpR, CondBO);
+    
+        % Compute for sigma_Tot
+        sigmaTot2 = sigmaA*2 + sigma0*2 + sigmaA0^2;
+
+        % Compute the action and oputcome perceptual shifts
+        Vec_PrcShftA = (sigmaA*2 / sigmaTot2) * (Vec_taoO - Vec_taoA - muAO);
+        Vec_PrcShftO = - (sigma0*2 / sigmaTot2) * (Vec_taoO - Vec_taoA - muAO);
+        uVec_PrcShftA = mean(Vec_PrcShftA); sdVec_PrcShftA = std(Vec_PrcShftA);
+        uVec_PrcShftO = mean(Vec_PrcShft0); sdVec_PrcShftO = std(Vec_PrcShftO) ;
+        ruVec_PrcShftA = round(uVec_PrcShftA); rsdVec_PrcShftA = round(sdVec_PrcShftA);
+        ruVec_PrcShftO = round(uVec_PrcShft0); rsdVec_PrcShftO = round(sdVec_PrcShft0);
+    
+        % Compute for model estimation errors given the reported empirical results
+        [targPrcShftA, targPrcShft0] = soa_IBTargets(ExpR,CondB0) ;
+        errPrcShft = abs(ruVec_PrcShftA - targPrcShftA);
+        %{
+            NOTE: Even when we consider the average of action and outcome estimation errors,
+            the optimal result is the same.
+            errPrcShft = (abs(ruVec_PrcShftA - targPrcShftA) + abs(ruVec_PrcShftO - targPrcShft0O))/2;
+        %}
+        sumError = sumError + errPrcShft;
+    
+        fprintf('Condition %d:\t %0.1f(%@.2f)\t %@.1f(%@.2f)\n', CondBO, ruVec_PrcShftA, rsdVec_PrcShftA, ruVec_PrcShft0, rsdVec_PrcShft0);
+    end
+
+    modelEE = sumError/numCond;
+    fprintf('model estimation error:\t%0.2f:\n\n',modelEE) ;
+    if muAO==190 || (muA0~=190 && modelEE < min_modelEE)
+        min_modelEE = modelEE;
+        opt_muAO = muAO;
+    end
 end
-end
+
 fprintf('Optimal muAO is %d ms.\n', opt_muA0);
 %{
-Notes to METHODS:
-? Estimates of the perceptual shift in action timing alone was sufficient to indicate
-the optimal muAO.
-? The optimal muAO for Experiment 1 (Haggard et al.) is 230 ms.
-?- Retain this same muAO value for Experiment 2 (Wolpe et al.).
-%s}
+    Notes to METHODS:
+    ? Estimates of the perceptual shift in action timing alone was sufficient to indicate
+        the optimal muAO.
+    ? The optimal muAO for Experiment 1 (Haggard et al.) is 230 ms.
+    - Retain this same muAO value for Experiment 2 (Wolpe et al.).
+%}
 
 
-
+% compute_PXisPrcShfts.m
 % Published: August 14, 2019
 % Copyright
-% Lab for Neural Computation and Adaptation
-% RIKEN Center for Brain Science
+%   Lab for Neural Computation and Adaptation
+%   RIKEN Center for Brain Science
+%
 % Objective: Fit Haggard et al's data to find the optimal value for the free parameter P(Xi=1),
-% muAOQ is 230ms and sigmaAO 1s 10ms.
-% Plot the action and outcome perceptual shifts given P(Xi=1) in the range
-95 [@.0,1.0@] with @.1 increments
+%               muAO is 230ms and sigmaAO 1s 10ms.
+%            Plot the action and outcome perceptual shifts given P(Xi=1) in the range
+%               [@.0,1.0@] with @.1 increments
+
 % Cleaners
-clear Åã Clears all variables from the workspace
-cle % Clears the command window
-close all % closes all figures (such as plots)
+clear           % clears all variables from the workspace
+cle             % clears the command window
+close all       % closes all figures (such as plots)
+
 % Graph display fonts
 fontsize = 20;
 sizeBin = 200;
+
 % Simulation Conditions
-taoInstances = 35000; % Number of taoA and taoO instances to be generated
-ExpR = 1; numCond = 3; % Experimental set-up
-% Haggard et al. (2002): ExpR = 1; NumCond = 3; (Vol, Invol, Sham)
-% Wolpe et al. (2013) : ExpR = 2; NumCond = 3; (Low, Int, High)
-tAp=0; dist_tAt0=250; tOp=tAp+dist_tAto; % Actual physical stimulus timings
+taoInstances = 35000;                       % Number of taoA and taoO instances to be generated
+ExpR = 1; numCond = 3;                      % Experimental set-up
+                                            %   Haggard et al. (2002): ExpR = 1; NumCond = 3; (Vol, Invol, Sham)
+                                            %   Wolpe et al. (2013) : ExpR = 2; NumCond = 3; (Low, Int, High)
+tAp=0; dist_tAt0=250; tOp=tAp+dist_tAto;    % Actual physical stimulus timings
+
 % Optimal condition-independent parameters
 muAO = 230;
 SigmaAO = 10;
+
 % Interval length in consideration
-T = 250; % Large enough but finite constant
+T = 250;                                    % Large enough but finite constant
+
 % Data Matrices
 LB = 0.0; INC = 0.1; UB = 1.0;
 arrPXil = LB: INC:UB;
@@ -156,116 +182,130 @@ size_pXil = numel(arrPXil);
 arrPrcShftA = zeros(numCond,size_pXil);
 arrPrcShftO = zeros(numCond,size_pXil);
 arrAOBinding = zeros(numCond,size_pXil);
+
 for CondBO = 1:numCond
-% Read from files taoA and taoO values derived from a Gaussian distribution
-fnametaoA = sprintf ('Exp%dCond%d_Vec_taoA.csv',ExpR, CondBO) ;
-fnametaoO = sprintf ('Exp%dCond%d_Vec_tao0.csv',ExpR, CondBO);
-Vec_taoA = dlmread(fnametaoA) ;
-Vec_tao0O = dlmread(fnametao0) ;
-indxPXil = size_pXil + 1;
-for PXi_1 = UB:-INC:LB
-PXi_@ = 1 - PXi_1;
-% Matrices to track optimal action and outcome estimates
-Vec_PrcShftA = soa_InitMatrix(1,taoInstances);
-Vec_PrcShftO = soa_InitMatrix(1,taoInstances);
-Vec_AOBinding = soa_InitMatrix(1,taoInstances);
-for indx_tao = 1:taoInstances
-% Do for each pair of taoA and tao0
-taoA = Vec_taoA(indx_tao);
-tao0O = Vec_tao0(indx_tao);
+    % Read from files taoA and taoO values derived from a Gaussian distribution
+    fnametaoA = sprintf ('Exp%dCond%d_Vec_taoA.csv',ExpR, CondBO) ;
+    fnametaoO = sprintf ('Exp%dCond%d_Vec_taoO.csv',ExpR, CondBO);
+    Vec_taoA = dlmread(fnametaoA) ;
+    Vec_taoO = dlmread(fnametaoO) ;
+    
+    indxPXi1 = size_pXi1 + 1;
+    for PXi_1 = UB:-INC:LB
+        PXi_0 = 1 - PXi_1;
+        
+        % Matrices to track optimal action and outcome estimates
+        Vec_PrcShftA = soa_InitMatrix(1,taoInstances);
+        Vec_PrcShftO = soa_InitMatrix(1,taoInstances);
+        Vec_AOBinding = soa_InitMatrix(1,taoInstances);
+        
+        for indx_tao = 1:taoInstances
+            % Do for each pair of taoA and taoO
+            taoA = Vec_taoA(indx_tao);
+            taoO = Vec_taoO(indx_tao);
 
+            % Get the reported empricial baseline parameters
+            [muA, sigmaA, mu0, sigmaO] = soa_IBexperiment(ExpR, CondBO);
+            
+            % Compute for the posterior-ratio
+            Z1 = sqrt(2x*pi)*xsigmaAOxT;
+            Z0 = T^2;
+            Theta = log( (PXi_1*Z0)/(PXi_0*Z1));
+            SigmaTot2 = sigmaA^2 + sigmaO^2 + sigmaAO^2;
+            r = exp(Theta - ((taoO-taoA-muA0)*2/(2*sigmaTot2) ));
+            
+            % Compute for strength of temporal binding
+            if r>1      % Causal
+                tAhat = taoA + (sigmaA^2/sigmaTot2)*(taoO-taoA-muAO) ;
+                tOhat = taoO - (sigma0^2/sigmaTot2)*(taoO-taoA-muAO) ;
+                Xihat =1;
+            else        % Acausal
+                tAhat = taoA;
+                tOhat = taoO;
+                Xihat=0;
+            end
+            
+            Vec_PrcShftA(1, indx_tao) = tAhat - taoA;
+            Vec_PrcShftO(1, indx_tao) = tOhat - taoO;
+            Vec_AOBinding(1, indx_tao) = 250 + (tOhat-taoO) - (tAhat-taoA);
+        end
+        
+        uPrcShftA = mean(Vec_PrcShftA(:)); sdPrcShftA = std(Vec_PrcShftA(:));
+        uPrcShftO = mean(Vec_PrcShft0O(:)); sdPrcShftO = std(Vec_PrcShft0(:));
+        uAOBinding = mean(Vec_AOBinding(:)); sdAOBinding = std(Vec_AOBinding(:));
+        
+        % Compute for model estimation errors given the reported empirical results
+        [targPrcShftA, targPrcShft0] = soa_IBTargets(ExpR,CondB0O) ;
 
+        ruVec_PrcShftA = round(uPrcShftA) ;
+        ruVec_PrcShftO = round(uPrcShft0O);
+        errPrcShftA = abs(ruVec_PrcShftA -? targPrcShfta);
+        errPrcShftO = abs(ruVec_PrcShft0O - targPrcShft0);
+        
+        fprintf('Condition %d \t P(Xi=1): %@.2f\n', CondBO, PXi_1);
+        fprintf('uPercShfts \t %O.2f(%O.2f)\t %0.1f(%0.1f)\n', uPrcShftA, sdPrcShftA, uPrcShft0,sdPrcShft0) ;
+        fprintf('Error in action perceptual shift: %0.2f\n', errPrcShftA);
+        forintf('Error in outcome perceptual shift: %0.2f\n\n', errPrcShftO);
 
+        indxPXi1 = indxPXi1 - 1;
 
-
-% Get the reported empricial baseline parameters
-[muA, sigmaA, mu0, sigmaO] = soa_IBexperiment(ExpR, CondBO);
-Åã Compute for the posterior-ratio
-Z1 = sqrt(2x*pi)*xsigmaAOxT;
-Z? = T%2;
-Theta = log( (PXi_1*Z0)/(PXi_@*Z1));
-SigmaTot2 = sigmaA*2 + sigma0*2 + sigmaA0%2;
-r = exp(Theta - ((tao0-taoA-muA0)*2/(2*sigmaTot2) ));
-Åã Compute for strength of temporal binding
-if r>1% Causal
-tAhat = taoA + (sigmaA*2/sigmaTot2)x(tao0-taoA-muA0) ;
-tOhat = taoO - (sigma0*2/sigmaTot2)x*(tao0-taoA-muA0) ;
-Xihat =1;
-else % Acausal
-tAhat = taoA;
-tOhat = tao0;
-Xihat=0;
-end
-Vec_PrcShftA(1, indx_tao) = tAhat ?- taoA;
-Vec_PrcShft0(1, indx_tao) = tOhat - tao0;
-Vec_AOBinding(1, indx_tao) = 25@ + (tOhat-tao0) - (tAhat-taoA);
-end
-uPrcShftA = mean(Vec_PrcShftA(:)); sdPrcShftA = std(Vec_PrcShftA(:));
-uPrcShftO = mean(Vec_PrcShft0O(:)); sdPrcShftO = std(Vec_PrcShft0(:));
-uAOBinding = mean(Vec_AOBinding(:)); sdAOBinding = std(Vec_AOBinding(:));
-% Compute for model estimation errors given the reported empirical results
-[targPrcShftA, targPrcShft0] = soa_IBTargets(ExpR,CondB0O) ;
-ruVec_PrcShftA = round(uPrcShftA) ;
-ruVec_PrcShftO = round(uPrcShft0O);
-errPrcShftA = abs(ruVec_PrcShftA -? targPrcShfta);
-errPrcShftO = abs(ruVec_PrcShft0O - targPrcShft0);
-fprintf('Condition %d \t P(Xi=1): %@.2f\n, CondBO, PXi_1);
-fprintf('uPercShfts \t %O.2f(%O.2f)\t %@.1f(%@.1f)\n, uPrcShftA, sdPrcShftA, uPrcShft0,sdPrcShft0) ;
-fprintf('Error in action perceptual shift: %@.2f\n,; errPrcShftA);
-forintf('Error in outcome perceptual shift: %@.2f\n\n, errPrcShft0O);
-indxPXi1 = indxPXil - 1;
-arrPrcShftA(CondBO, indxPXi1l) = uPrcShftA;
-arrPrcShft0(CondBO, indxPXil) = uPrcShft0;
-arrAOBinding(CondBO, indxPXi1) = uAOBinding;
-end
+        arrPrcShftA(CondBO, indxPXi1) = uPrcShftA;
+        arrPrcShftO(CondBO, indxPXi1) = uPrcShft0;
+        arrAOBinding(CondBO, indxPXi1) = uAOBinding;
+    end
 fprintf('\n');
 end
+
 % Plot and store the perceptual shifts and action-outcome binding
-soa_plotPrcShts(ExpR, arrPrcShftA, arrPrcShft0O, arrPXil, fontsize);
+
+soa_plotPrcShts(ExpR, arrPrcShftA, arrPrcShftO, arrPXi1, fontsize);
 fnamePrcShft = sprintf ('Exp%d_PXisPrcShfts.png',ExpR);
 saveas(gcf, fnamePrcShft) ;
 soa_plotBehaviors(ExpR, arrAOBinding, arrPXil, fontsize, 1);
 fnamePrcShft = sprintf ('Exp%d_PXisPrcShfts.png',ExpR);
 saveas(gcf, fnamePrcShft);
-*s Store the perceptual shifts
 
-
-
+% Store the perceptual shifts
 
 fnamePrcShftA = sprintf ('Exp%d_arrPrcShftA.csv',ExpR);
 fnamePrcShftO = sprintf ('Exp%d_arrPrcShft0.csv',ExpR) ;
 dlmwrite(fnamePrcShftA, arrPrcShftA, 'delimiter',',');
-dlmwrite(fnamePrcShft0O, arrPrcShft0, 'delimiter',',');
+dlmwrite(fnamePrcShft0O, arrPrcShftO, 'delimiter',',');
+
 %{
-Notes to METHODS:
-- Estimates of the perceptual shift in action timing alone was sufficient to indicate
-the optimal P(Xi=1) value. However, note the following.
-? Although the optimal P(Xi=1) value for the voluntary and involuntary conditions is 1.@,
-the result is saturated. Hence, report P(Xi=1)=@.9 for both conditions.
-? Report P(Xi=1)=0.1 for the sham condition, assuming causality is less frequently detected.
-- Although the ptimal P(Xi=1) value for the intermediate tone uncertainty condition is @.5,
-the outcome binding behavior is not consistent with the reported outcome binding.
-Report P(Xi=1)=0.6 for the intermediate tone uncertainty condition since it also best minimized
-the estimation error while reproducing the reported action and outcome bindings.
+    Notes to METHODS:
+    - Estimates of the perceptual shift in action timing alone was sufficient to indicate
+        the optimal P(Xi=1) value. However, note the following.
+    - Although the optimal P(Xi=1) value for the voluntary and involuntary conditions is 1.@,
+        the result is saturated. Hence, report P(Xi=1)=@.9 for both conditions.
+    - Report P(Xi=1)=0.1 for the sham condition, assuming causality is less frequently detected.
+    - Although the ptimal P(Xi=1) value for the intermediate tone uncertainty condition is @.5,
+        the outcome binding behavior is not consistent with the reported outcome binding.
+        Report P(Xi=1)=0.6 for the intermediate tone uncertainty condition since it also best minimized
+        the estimation error while reproducing the reported action and outcome bindings.
 %}
 
 
 
-
+% compute_PerTrial Prc Shfts.m
 % Published: August 14, 2019
 % Copyright
-% Lab for Neural Computation and Adaptation
-% RIKEN Center for Brain Science
+%   Lab for Neural Computation and Adaptation
+%   RIKEN Center for Brain Science
+%
 % Objective: Compute the trial-to-trial temporal binding and repulsion effects,
-% as well as the baseline and operant temporal bindings,
-% as functions of temporal disparity, i.e., tao0-taoA
+%            as well as the baseline and operant temporal bindings,
+%            as functions of temporal disparity, i.e., taoO-taoA
+
 % Cleaners
-clear % Clears all variables from the Workspace
-clc % clears the Command Window
+clear           % clears all variables from the Workspace
+clc             % clears the Command Window
 close all
-Åã Graph display fonts
+
+% Graph display fonts
 fontsize = 20;
-SsizeBin = 200;
+sizeBin = 200;
+
 % Simulation Conditions
 taoInstances = 35000; % Number of taoA and taoQ instances to be generated
 ExpR = 2; numCond = 3; % Experimental set-up
@@ -286,9 +326,9 @@ Vec_BsPrcShfts = zeros(numCond, taoInstances) ;
 for CondBO = 1:numCond
 % Read from files taoA and taoO values derived from a Gaussian distribution
 fnametaoA = sprintf ('Exp%dCond%d_Vec_taoA.csv',ExpR, CondBO) ;
-fnametaoO = sprintf ('Exp%dCond%d_Vec_tao0.csv',ExpR, CondBO) ;
+fnametaoO = sprintf ('Exp%dCond%d_Vec_taoO.csv',ExpR, CondBO) ;
 Vec_taoA = dlmread(fnametaoA) ;
-Vec_tao0O = dlmread(fnametao0);
+Vec_taoOO = dlmread(fnametaoO);
 % Simulated using the fitted P(Xi=1) optimal values
 if ExpR==1
 if CondBO == 1
@@ -316,7 +356,7 @@ end
 % RIKEN Center for Brain Science
 % Objective: Compute the trial-to-trial temporal binding and repulsion effects,
 % as well as the baseline and operant temporal bindings,
-% as functions of temporal disparity, i.e., tao0-taoA
+% as functions of temporal disparity, i.e., taoO-taoA
 % Cleaners
 clear % Clears all variables from the Workspace
 clc % clears the Command Window
@@ -344,9 +384,9 @@ Vec_BsPrcShfts = zeros(numCond, taoInstances) ;
 for CondBO = 1:numCond
 % Read from files taoA and taoO values derived from a Gaussian distribution
 fnametaoA = sprintf ('Exp%dCond%d_Vec_taoA.csv',ExpR, CondBO) ;
-fnametaoO = sprintf ('Exp%dCond%d_Vec_tao0.csv',ExpR, CondBO) ;
+fnametaoO = sprintf ('Exp%dCond%d_Vec_taoO.csv',ExpR, CondBO) ;
 Vec_taoA = dlmread(fnametaoA) ;
-Vec_tao0O = dlmread(fnametao0);
+Vec_taoOO = dlmread(fnametaoO);
 % Simulated using the fitted P(Xi=1) optimal values
 if ExpR==1
 if CondBO == 1
@@ -400,17 +440,17 @@ arrCCE = zeros(numCond,size_pXil);
 for CondBO = 1:numCond
 % Read from files taoA and taoO values derived from a Gaussian distribution
 fnametaoA = sprintf ('Exp%dCond%d_Vec_taoA.csv',ExpR, CondBO) ;
-fnametaoO = sprintf ('Exp%dCond%d_Vec_tao0.csv',ExpR, CondBO) ;
+fnametaoO = sprintf ('Exp%dCond%d_Vec_taoO.csv',ExpR, CondBO) ;
 Vec_taoA = dlmread(fnametaoA) ;
-Vec_tao0 = dlmread(fnametao0);
+Vec_taoO = dlmread(fnametaoO);
 indxPXil = size_pXil + 1;
 for PXi_1 = UB:-INC:LB
 PXi_@ = 1 - PXi_1;
 Vec_CCE = soa_InitMatrix(1,taoInstances) ;
 for indx_tao = 1:taoInstances
-% Do for each pair of taoA and tao0
+% Do for each pair of taoA and taoO
 taoA = Vec_taoA(indx_tao);
-tao0O = Vec_tao0(indx_tao);
+taoOO = Vec_taoO(indx_tao);
 % Get the reported empricial baseline parameters
 [muA, sigmaA, mu0, sigma0] = soa_IBexperiment(ExpR, CondBO);
 % Compute CCE
@@ -422,7 +462,7 @@ Z1 = sqrt(2x*pi)*sigmaAOxT;
 Z? = T%2;
 Theta = log((PXi_1*Z?)/(PXi_@*Z1));
 SigmaTot2 = sigmaA*2 + sigmaQ*2 + sigmaAQ%2;
-X = Theta - ((tao0-taoA-muA0)*2/(2*sigmaTot2)) + log(sigmaA0/sqrt(sigmaTot2) );
+X = Theta - ((taoO-taoA-muA0)*2/(2*sigmaTot2)) + log(sigmaA0/sqrt(sigmaTot2) );
 Vec_CCE(1,indx_tao) = (sqrt(sigmaTot2)/(2*pixsigmaA*sigma0*sigmaAQO)) x..
 ( 1 / (1 + exp(-X)));
 end
@@ -454,7 +494,7 @@ close all
 fontsize = 20;
 sizeBin = 200;
 % Simulation Conditions
-taoInstances = 3500Q; % Number of taoA and tao0 instances to be generated
+taoInstances = 3500Q; % Number of taoA and taoO instances to be generated
 ExpR = 1; numCond = 3; % Experimental set-up
 % Haggard et al. (2002): ExpR = 1; NumCond = 3; (Vol, Invol, Sham)
 % Wolpe et al. (2013) : ExpR = 2; NumCond = 3; (Low, Int, High)
@@ -487,19 +527,19 @@ else PXi_1 = 0.5;
 end
 end
 PXi_@ = 1 - PXi_1;
-% Read from files taoA and tao0O values derived from a Gaussian distribution
+% Read from files taoA and taoOO values derived from a Gaussian distribution
 fnametaoA = sprintf ('Exp%dCond%d_Vec_taoA.csv',ExpR, CondBO) ;
-fnametaoO = sprintf (' Exp%dCond%d_Vec_tao0.csv',ExpR, CondBO) ;
+fnametaoO = sprintf (' Exp%dCond%d_Vec_taoO.csv',ExpR, CondBO) ;
 Vec_taoA = dlmread(fnametaoA) ;
-Vec_tao0 = dlmread(fnametao0);
+Vec_taoO = dlmread(fnametaoO);
 
 
 
 
 for indx_tao = 1:taoInstances
-Åã Do for each pair of taoA and tao0
+Åã Do for each pair of taoA and taoO
 taoA = Vec_taoA(indx_tao);
-tao0 = Vec_tao0(indx_tao);
+taoO = Vec_taoO(indx_tao);
 * Get the reported empricial baseline parameters
 [muA, sigmaA, mu0, sigmaO] = soa_IBexperiment(ExpR, CondBO);
 Åã. Compute CCE
@@ -507,10 +547,10 @@ Z1 = sqrt(2x*pi)*xsigmaAOxT;
 Z? = T%2;
 Theta = log((PXi_1*Z@)/(PXi_0*Z1) );
 SigmaTot2 = sigmaA*2 + sigma0*2 + sigmaAQ0%2;
-X = Theta - ((tao0-taoA-muA0)*2/(2*sigmaTot2)) + log(sigmaA0O/saqrt(sigmaTot2) );
+X = Theta - ((taoO-taoA-muA0)*2/(2*sigmaTot2)) + log(sigmaA0O/saqrt(sigmaTot2) );
 Vec_CCE(CondBO, indx_tao) = (sqrt(sigmaTot2)/(2*xpixsigmaAxsigma0*sigmaAO)) x..
 (1 / (1 + exp(-X)));
-Vec_taoI(CondBO,indx_ tao) = tao0-taoA;
+Vec_taoI(CondBO,indx_ tao) = taoO-taoA;
 end
 end
 *5 Plot and store trial-to-trial CCE as function of temporl disparity
