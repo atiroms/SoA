@@ -18,10 +18,10 @@ sizeBin = 200;
 
 % Simulation Conditions
 taoInstances = 35000;                       % Number of taoA and taoQ instances to be generated
-ExpR = 2; numCond = 3;                      % Experimental set-up
+ExpR = 1; numCond = 3;                      % Experimental set-up
                                             %   Haggard et al. (2002): ExpR = 1; NumCond = 3; (Vol, Invol, Sham)
                                             %   Wolpe et al. (2013) : ExpR = 2; NumCond = 3; (Low, Int, High)
-tAp=0; dist_tAtO=250; tOp=tAp+dist_tAto;   % Actual physical stimulus timings
+tAp=0; dist_tAtO=250; tOp=tAp+dist_tAtO;   % Actual physical stimulus timings
 
 % Optimal condition-independent parameters
 muAO = 230;
@@ -69,22 +69,22 @@ for CondBO = 1:numCond
 
         % Do for each pair of taoA and taod
         taoA = Vec_taoA(indx_tao);
-        taoO = Vec_tao0(indx_tao);
+        taoO = Vec_taoO(indx_tao);
         
         % Get the reported empricial baseline parameters
-        [muA, sigmaA, mu0, sigmaO] = soa_IBexperiment(ExpR, CondBO);
+        [muA, sigmaA, muO, sigmaO] = soa_IBexperiment(ExpR, CondBO);
 
         % Compute for the posterior-ratio
-        Z1 = sqrt(2*pi)*sigmaAOxT;
+        Z1 = sqrt(2*pi)*sigmaAO*T;
         Z0 = T^2;
         Theta = log( (PXi_1*Z0)/(PXi_0*Z1) );
-        sigmaTot2 = sigmaA^2 + sigma0^2 + sigmaA0^2;
-        r = exp(Theta - ((tao0-taoA-muA0)^2/(2*sigmaTot2)));
+        sigmaTot2 = sigmaA^2 + sigmaO^2 + sigmaAO^2;
+        r = exp(Theta - ((taoO-taoA-muAO)^2/(2*sigmaTot2)));
 
         % Compute for strength of temporal binding
         if r>1  % Causal
             tAhat = taoA + (sigmaA^2/sigmaTot2)*(taoO-taoA-muAO) ;
-            tOhat = taoO - (sigma0^2/sigmaTot2)*(taoO-taoA-muAO) ;
+            tOhat = taoO - (sigmaO^2/sigmaTot2)*(taoO-taoA-muAO) ;
             Xihat =1;
         else % Acausal
             tAhat = taoA;
@@ -104,21 +104,21 @@ end
 
 sortedtaoI = Vec_taoI;
 [sortedtaoI(1,:), sortIndx1] = sort(Vec_taoI(1,:));
-[sortedtaol(2,:), sortIndx2] = sort(Vec_taoI(2,:));
-[sortedtaol(3,:), sortIndx3] = sort(Vec_taoI(3,:));
+[sortedtaoI(2,:), sortIndx2] = sort(Vec_taoI(2,:));
+[sortedtaoI(3,:), sortIndx3] = sort(Vec_taoI(3,:));
 sortedPrcShftA = soa_sortMatrices(Vec_PrcShftA, sortIndx1, sortIndx2, sortIndx3);
 sortedPrcShftO = soa_sortMatrices(Vec_PrcShftO, sortIndx1, sortIndx2, sortIndx3);
 sortedOpPrcShfts = soa_sortMatrices(Vec_OpPrcShfts, sortIndx1, sortIndx2, sortIndx3);
 sortedBsPrcShfts = soa_sortMatrices(Vec_BsPrcShfts, sortIndx1, sortIndx2, sortIndx3);
-soa_plotErrorBars(ExpR, sortedtaolI, sortedPrcShftA, fontsize, 1, sizeBin);
+soa_plotErrorBars(ExpR, sortedtaoI, sortedPrcShftA, fontsize, 1, sizeBin);
 fnamePrcShft = sprintf ('Exp%d_perTrialPrcShftA.png',ExpR) ;
 saveas(gcf, fnamePrcShft);
-soa_plotErrorBars(ExpR, sortedtaol, sortedPrcShftO, fontsize, 1, sizeBin);
+soa_plotErrorBars(ExpR, sortedtaoI, sortedPrcShftO, fontsize, 1, sizeBin);
 fnamePrcShft = sprintf ('Exp%d_perTrialPrcShft0.png',ExpR);
 saveas(gcf, fnamePrcShft);
-soa_plotErrorBars(ExpR, sortedtaol, sortedBsPrcShfts, fontsize, 1, sizeBin);
+soa_plotErrorBars(ExpR, sortedtaoI, sortedBsPrcShfts, fontsize, 1, sizeBin);
 fnamePrcShft = sprintf ('Exp%d_perTrialBaselinePrcShfts.png',ExpR);
 saveas(gcf, fnamePrcShft) ;
-soa_plotErrorBars(ExpR, sortedtaol, sortedOpPrcShfts, fontsize, 1, sizeBin);
+soa_plotErrorBars(ExpR, sortedtaoI, sortedOpPrcShfts, fontsize, 1, sizeBin);
 fnamePrcShft = sprintf ('Exp%d_perTrialOperantPrcShfts.png',ExpR);
 saveas(gcf, fnamePrcShft) ;

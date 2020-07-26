@@ -10,7 +10,7 @@
 
 % Cleaners
 clear           % clears all variables from the workspace
-cle             % clears the command window
+clc             % clears the command window
 close all       % closes all figures (such as plots)
 
 % Graph display fonts
@@ -22,22 +22,22 @@ taoInstances = 35000;                       % Number of taoA and taoO instances 
 ExpR = 1; numCond = 3;                      % Experimental set-up
                                             %   Haggard et al. (2002): ExpR = 1; NumCond = 3; (Vol, Invol, Sham)
                                             %   Wolpe et al. (2013) : ExpR = 2; NumCond = 3; (Low, Int, High)
-tAp=0; dist_tAt0=250; tOp=tAp+dist_tAto;    % Actual physical stimulus timings
+tAp=0; dist_tAtO=250; tOp=tAp+dist_tAtO;    % Actual physical stimulus timings
 
 % Optimal condition-independent parameters
 muAO = 230;
-SigmaAO = 10;
+sigmaAO = 10;
 
 % Interval length in consideration
 T = 250;                                    % Large enough but finite constant
 
 % Data Matrices
 LB = 0.0; INC = 0.1; UB = 1.0;
-arrPXil = LB: INC:UB;
-size_pXil = numel(arrPXil);
-arrPrcShftA = zeros(numCond,size_pXil);
-arrPrcShftO = zeros(numCond,size_pXil);
-arrAOBinding = zeros(numCond,size_pXil);
+arrPXi1 = LB: INC:UB;
+size_pXi1 = numel(arrPXi1);
+arrPrcShftA = zeros(numCond,size_pXi1);
+arrPrcShftO = zeros(numCond,size_pXi1);
+arrAOBinding = zeros(numCond,size_pXi1);
 
 for CondBO = 1:numCond
     % Read from files taoA and taoO values derived from a Gaussian distribution
@@ -61,19 +61,19 @@ for CondBO = 1:numCond
             taoO = Vec_taoO(indx_tao);
 
             % Get the reported empricial baseline parameters
-            [muA, sigmaA, mu0, sigmaO] = soa_IBexperiment(ExpR, CondBO);
+            [muA, sigmaA, muO, sigmaO] = soa_IBexperiment(ExpR, CondBO);
             
             % Compute for the posterior-ratio
             Z1 = sqrt(2*pi)*sigmaAO*T;
             Z0 = T^2;
             Theta = log( (PXi_1*Z0)/(PXi_0*Z1));
-            SigmaTot2 = sigmaA^2 + sigmaO^2 + sigmaAO^2;
-            r = exp(Theta - ((taoO-taoA-muA0)*2/(2*sigmaTot2) ));
+            sigmaTot2 = sigmaA^2 + sigmaO^2 + sigmaAO^2;
+            r = exp(Theta - ((taoO-taoA-muAO)^2/(2*sigmaTot2) ));
             
             % Compute for strength of temporal binding
             if r>1      % Causal
                 tAhat = taoA + (sigmaA^2/sigmaTot2)*(taoO-taoA-muAO) ;
-                tOhat = taoO - (sigma0^2/sigmaTot2)*(taoO-taoA-muAO) ;
+                tOhat = taoO - (sigmaO^2/sigmaTot2)*(taoO-taoA-muAO) ;
                 Xihat =1;
             else        % Acausal
                 tAhat = taoA;
@@ -87,26 +87,26 @@ for CondBO = 1:numCond
         end
         
         uPrcShftA = mean(Vec_PrcShftA(:)); sdPrcShftA = std(Vec_PrcShftA(:));
-        uPrcShftO = mean(Vec_PrcShft0O(:)); sdPrcShftO = std(Vec_PrcShft0(:));
+        uPrcShftO = mean(Vec_PrcShftO(:)); sdPrcShftO = std(Vec_PrcShftO(:));
         uAOBinding = mean(Vec_AOBinding(:)); sdAOBinding = std(Vec_AOBinding(:));
         
         % Compute for model estimation errors given the reported empirical results
-        [targPrcShftA, targPrcShft0] = soa_IBTargets(ExpR,CondB0O) ;
+        [targPrcShftA, targPrcShftO] = soa_IBTargets(ExpR,CondBO) ;
 
         ruVec_PrcShftA = round(uPrcShftA) ;
-        ruVec_PrcShftO = round(uPrcShft0O);
-        errPrcShftA = abs(ruVec_PrcShftA -? targPrcShfta);
-        errPrcShftO = abs(ruVec_PrcShft0O - targPrcShft0);
+        ruVec_PrcShftO = round(uPrcShftO);
+        errPrcShftA = abs(ruVec_PrcShftA - targPrcShftA);
+        errPrcShftO = abs(ruVec_PrcShftO - targPrcShftO);
         
-        fprintf('Condition %d \t P(Xi=1): %@.2f\n', CondBO, PXi_1);
-        fprintf('uPercShfts \t %O.2f(%O.2f)\t %0.1f(%0.1f)\n', uPrcShftA, sdPrcShftA, uPrcShft0,sdPrcShft0) ;
+        fprintf('Condition %d \t P(Xi=1): %0.2f\n', CondBO, PXi_1);
+        fprintf('uPercShfts \t %O.2f(%O.2f)\t %0.1f(%0.1f)\n', uPrcShftA, sdPrcShftA, uPrcShftO,sdPrcShftO) ;
         fprintf('Error in action perceptual shift: %0.2f\n', errPrcShftA);
-        forintf('Error in outcome perceptual shift: %0.2f\n\n', errPrcShftO);
+        fprintf('Error in outcome perceptual shift: %0.2f\n\n', errPrcShftO);
 
         indxPXi1 = indxPXi1 - 1;
 
         arrPrcShftA(CondBO, indxPXi1) = uPrcShftA;
-        arrPrcShftO(CondBO, indxPXi1) = uPrcShft0;
+        arrPrcShftO(CondBO, indxPXi1) = uPrcShftA;
         arrAOBinding(CondBO, indxPXi1) = uAOBinding;
     end
 fprintf('\n');
@@ -117,7 +117,7 @@ end
 soa_plotPrcShts(ExpR, arrPrcShftA, arrPrcShftO, arrPXi1, fontsize);
 fnamePrcShft = sprintf ('Exp%d_PXisPrcShfts.png',ExpR);
 saveas(gcf, fnamePrcShft) ;
-soa_plotBehaviors(ExpR, arrAOBinding, arrPXil, fontsize, 1);
+soa_plotBehaviors(ExpR, arrAOBinding, arrPXi1, fontsize, 1);
 fnamePrcShft = sprintf ('Exp%d_PXisPrcShfts.png',ExpR);
 saveas(gcf, fnamePrcShft);
 
@@ -126,7 +126,7 @@ saveas(gcf, fnamePrcShft);
 fnamePrcShftA = sprintf ('Exp%d_arrPrcShftA.csv',ExpR);
 fnamePrcShftO = sprintf ('Exp%d_arrPrcShft0.csv',ExpR) ;
 dlmwrite(fnamePrcShftA, arrPrcShftA, 'delimiter',',');
-dlmwrite(fnamePrcShft0O, arrPrcShftO, 'delimiter',',');
+dlmwrite(fnamePrcShftO, arrPrcShftO, 'delimiter',',');
 
 %{
     Notes to METHODS:

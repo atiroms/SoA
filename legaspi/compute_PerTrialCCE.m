@@ -14,15 +14,15 @@ fontsize = 20;
 sizeBin = 200;
 
 % Simulation Conditions
-taoInstances = 35000; % Number of taoA and taoO instances to be generated
-ExpR = 1; numCond = 3; % Experimental set-up
-% Haggard et al. (2002): ExpR = 1; NumCond = 3; (Vol, Invol, Sham)
-% Wolpe et al. (2013) : ExpR = 2; NumCond = 3; (Low, Int, High)
-tAp=0; dist_tAt0=250; tOp=tAp+dist_tAtO; % Actual physical stimulus timings
+taoInstances = 35000;   % Number of taoA and taoO instances to be generated
+ExpR = 1; numCond = 3;  % Experimental set-up
+                        % Haggard et al. (2002): ExpR = 1; NumCond = 3; (Vol, Invol, Sham)
+                        % Wolpe et al. (2013) : ExpR = 2; NumCond = 3; (Low, Int, High)
+tAp=0; dist_tAtO=250; tOp=tAp+dist_tAtO; % Actual physical stimulus timings
 
 % Optimal condition-independent parameters
 muAO = 230;
-SigmaAO = 10;
+sigmaAO = 10;
 
 % Interval length in consideration
 T = 250; % Large enough but finite constant
@@ -56,7 +56,7 @@ for CondBO = 1:numCond
 
     % Read from files taoA and taoOO values derived from a Gaussian distribution
     fnametaoA = sprintf ('Exp%dCond%d_Vec_taoA.csv',ExpR, CondBO) ;
-    fnametaoO = sprintf (' Exp%dCond%d_Vec_taoO.csv',ExpR, CondBO) ;
+    fnametaoO = sprintf ('Exp%dCond%d_Vec_taoO.csv',ExpR, CondBO) ;
     Vec_taoA = dlmread(fnametaoA) ;
     Vec_taoO = dlmread(fnametaoO);
 
@@ -66,14 +66,14 @@ for CondBO = 1:numCond
         taoO = Vec_taoO(indx_tao);
 
         % Get the reported empricial baseline parameters
-        [muA, sigmaA, mu0, sigmaO] = soa_IBexperiment(ExpR, CondBO);
+        [muA, sigmaA, muO, sigmaO] = soa_IBexperiment(ExpR, CondBO);
         
         % Compute CCE
         Z1 = sqrt(2*pi)*sigmaAO*T;
         Z0 = T^2;
         Theta = log((PXi_1*Z0)/(PXi_0*Z1));
         sigmaTot2 = sigmaA^2 + sigmaO^2 + sigmaAO^2;
-        X = Theta - ((taoO-taoA-muAO)*2/(2*sigmaTot2)) + log(sigmaAO/saqrt(sigmaTot2));
+        X = Theta - ((taoO-taoA-muAO)^2/(2*sigmaTot2)) + log(sigmaAO/sqrt(sigmaTot2));
         Vec_CCE(CondBO, indx_tao) = (sqrt(sigmaTot2)/(2*pi*sigmaA*sigmaO*sigmaAO)) * (1 / (1 + exp(-X)));
         Vec_taoI(CondBO,indx_tao) = taoO-taoA;
     end
@@ -81,7 +81,7 @@ end
 
 %Plot and store trial-to-trial CCE as function of temporl disparity
 
-sortedtaolI = Vec_taol;
+sortedtaoI = Vec_taoI;
 [sortedtaoI(1,:), sortIndx1] = sort(Vec_taoI(1,:));
 [sortedtaoI(2,:), sortIndx2] = sort(Vec_taoI(2,:));
 [sortedtaoI(3,:), sortIndx3] = sort(Vec_taoI(3,:));

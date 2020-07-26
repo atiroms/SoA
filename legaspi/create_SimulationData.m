@@ -7,7 +7,7 @@
 
 % Cleaners
 clear           % clears all variables from the workspace
-cle             % clears the command window
+clc             % clears the command window
 close all       % closes all figures (such as plots)
 
 %{
@@ -20,7 +20,7 @@ taoInstances = 35000;                               % Number of taoA and taoO in
 ExpR = 1; numCond = 3;                              % Experimental set-up
                                                     % Haggard et al. (2002): ExpR = 1; NumCond = 3; (Voluntary, Involuntary, Sham)
                                                     % Wolpe et al. (2013) : ExpR = 2; NumCond = 3; (Low, Intermediate, High)
-tAp=0; dist_tAtO=250; tOp=tAp+dist_tAto;            % Actual physical stimulus timings
+tAp=0; dist_tAtO=250; tOp=tAp+dist_tAtO;            % Actual physical stimulus timings
 
 for CondBO = 1:numCond
     % Initialize baseline parameters with reported empirical data
@@ -54,5 +54,5 @@ for CondBO = 1:numCond
     fnametaoA = sprintf ('Exp%dCond%d_Vec_taoA.csv',ExpR, CondBO) ;
     fnametaoO = sprintf ('Exp%dCond%d_Vec_taoO.csv',ExpR, CondBO) ;
     dlmwrite(fnametaoA, Vec_taoA,'delimiter',',');
-    dlmwrite(fnametaoOO, Vec_taoO,'delimiter',',');
+    dlmwrite(fnametaoO, Vec_taoO,'delimiter',',');
 end

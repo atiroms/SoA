@@ -15,7 +15,7 @@ close all                   % closes all figures (such as plots)
 taoInstances = 35000;                               % Number of taoA and taoO instances to be generated
 ExpR = 1; numCond = 3;                              % Experimental set-up
                                                     % Haggard et al. (2002): ExpR = 1; NumCond = 3; (Vol, Invol, Sham)
-tAp=0; dist_tAtO=250; tOp=tAp+dist_tAto;           % Actual physical stimulus timings
+tAp=0; dist_tAtO=250; tOp=tAp+dist_tAtO;           % Actual physical stimulus timings
 
 sigmaAO = 10;                                       % To obtain discernible perceptual shifts, sigmaAOQ should be small
 for muAO = [190 200 210 220 230 240 250]
@@ -32,21 +32,21 @@ for muAO = [190 200 210 220 230 240 250]
         Vec_taoO = dlmread(fnametaoO);
     
         % Get the reported empricial baseline parameters
-        [muA, sigmaA, mu0, sigmaO] = soa_IBexperiment(ExpR, CondBO);
+        [muA, sigmaA, muO, sigmaO] = soa_IBexperiment(ExpR, CondBO);
     
         % Compute for sigma_Tot
-        sigmaTot2 = sigmaA*2 + sigma0*2 + sigmaA0^2;
+        sigmaTot2 = sigmaA^2 + sigmaO^2 + sigmaAO^2;
 
         % Compute the action and oputcome perceptual shifts
-        Vec_PrcShftA = (sigmaA*2 / sigmaTot2) * (Vec_taoO - Vec_taoA - muAO);
-        Vec_PrcShftO = - (sigma0*2 / sigmaTot2) * (Vec_taoO - Vec_taoA - muAO);
+        Vec_PrcShftA = (sigmaA^2 / sigmaTot2) * (Vec_taoO - Vec_taoA - muAO);
+        Vec_PrcShftO = - (sigmaO^2 / sigmaTot2) * (Vec_taoO - Vec_taoA - muAO);
         uVec_PrcShftA = mean(Vec_PrcShftA); sdVec_PrcShftA = std(Vec_PrcShftA);
-        uVec_PrcShftO = mean(Vec_PrcShft0); sdVec_PrcShftO = std(Vec_PrcShftO) ;
+        uVec_PrcShftO = mean(Vec_PrcShftO); sdVec_PrcShftO = std(Vec_PrcShftO) ;
         ruVec_PrcShftA = round(uVec_PrcShftA); rsdVec_PrcShftA = round(sdVec_PrcShftA);
-        ruVec_PrcShftO = round(uVec_PrcShft0); rsdVec_PrcShftO = round(sdVec_PrcShft0);
+        ruVec_PrcShftO = round(uVec_PrcShftO); rsdVec_PrcShftO = round(sdVec_PrcShftO);
     
         % Compute for model estimation errors given the reported empirical results
-        [targPrcShftA, targPrcShft0] = soa_IBTargets(ExpR,CondB0) ;
+        [targPrcShftA, targPrcShftO] = soa_IBTargets(ExpR,CondBO) ;
         errPrcShft = abs(ruVec_PrcShftA - targPrcShftA);
         %{
             NOTE: Even when we consider the average of action and outcome estimation errors,
@@ -55,18 +55,18 @@ for muAO = [190 200 210 220 230 240 250]
         %}
         sumError = sumError + errPrcShft;
     
-        fprintf('Condition %d:\t %0.1f(%@.2f)\t %@.1f(%@.2f)\n', CondBO, ruVec_PrcShftA, rsdVec_PrcShftA, ruVec_PrcShft0, rsdVec_PrcShft0);
+        fprintf('Condition %d:\t %0.1f(%0.2f)\t %0.1f(%0.2f)\n', CondBO, ruVec_PrcShftA, rsdVec_PrcShftA, ruVec_PrcShftO, rsdVec_PrcShftO);
     end
 
     modelEE = sumError/numCond;
     fprintf('model estimation error:\t%0.2f:\n\n',modelEE) ;
-    if muAO==190 || (muA0~=190 && modelEE < min_modelEE)
+    if muAO==190 || (muAO~=190 && modelEE < min_modelEE)
         min_modelEE = modelEE;
         opt_muAO = muAO;
     end
 end
 
-fprintf('Optimal muAO is %d ms.\n', opt_muA0);
+fprintf('Optimal muAO is %d ms.\n', opt_muAO);
 %{
     Notes to METHODS:
     ? Estimates of the perceptual shift in action timing alone was sufficient to indicate

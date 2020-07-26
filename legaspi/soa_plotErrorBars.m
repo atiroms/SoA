@@ -19,13 +19,13 @@ if experiment == 1
 
     if flag == 1
 
-        errorbar(mean( reshape(arrAxes(1,:),sizeBin, []),1), mean(reshape(arrBehavior(1,:),sizeBin,[]),1), std(reshape(arrBehavior(1,:),sizeBin,[]),1),'b.', 'LineWidth', LineWidth,'MarkerSize', markerSize);
-        errorbar(mean( reshape(arrAxes(2,:),SizeBin, []),1), mean(reshape(arrBehavior(2,:),sizeBin,[]),1), std(reshape(arrBehavior(2,:),sizeBin,[]),1),'r.', 'LineWidth', LineWidth,'MarkerSize', markerSize);
-        errorbar(mean(reshape(arrAxes(3,:),SsizeBin, []),1), mean(reshape(arrBehavior(3,:),SizeBin,[]),1), std(reshape(arrBehavior(3,:),sizeBin, []),1),'k.', 'LineWidth', LineWidth,'MarkerSize', markerSize);
+        errorbar(mean(reshape(arrAxes(1,:),sizeBin, []),1), mean(reshape(arrBehavior(1,:),sizeBin,[]),1), std(reshape(arrBehavior(1,:),sizeBin,[]),1),'b.', 'LineWidth', LineWidth,'MarkerSize', markerSize);
+        errorbar(mean(reshape(arrAxes(2,:),sizeBin, []),1), mean(reshape(arrBehavior(2,:),sizeBin,[]),1), std(reshape(arrBehavior(2,:),sizeBin,[]),1),'r.', 'LineWidth', LineWidth,'MarkerSize', markerSize);
+        errorbar(mean(reshape(arrAxes(3,:),sizeBin, []),1), mean(reshape(arrBehavior(3,:),sizeBin,[]),1), std(reshape(arrBehavior(3,:),sizeBin, []),1),'k.', 'LineWidth', LineWidth,'MarkerSize', markerSize);
         lgnd = legend('Voluntary condition','Involuntary condition','Sham condition', 'Location', 'northwest');
     elseif flag == 2
-        errorbar(mean(reshape(arrAxes(2,:),SsizeBin, []),1), mean(reshape(arrBehavior(2,:),sizeBin,[]),1), std(reshape(arrBehavior(2,:),sizeBin,[]),1),'r.', 'ÅeLineWidth', LineWidth,'MarkerSize', markerSize) ;
-        errorbar(mean( reshape(arrAxes(1,:),sizeBin, []),1), mean(reshape(arrBehavior(1,:),sizeBin,[]),1), std(reshape(arrBehavior(1,:),sizeBin,[]),1),'b.', 'LineWidth', LineWidth,'MarkerSize', markerSize);
+        errorbar(mean(reshape(arrAxes(2,:),sizeBin, []),1), mean(reshape(arrBehavior(2,:),sizeBin,[]),1), std(reshape(arrBehavior(2,:),sizeBin,[]),1),'r.', 'LineWidth', LineWidth,'MarkerSize', markerSize) ;
+        errorbar(mean(reshape(arrAxes(1,:),sizeBin, []),1), mean(reshape(arrBehavior(1,:),sizeBin,[]),1), std(reshape(arrBehavior(1,:),sizeBin,[]),1),'b.', 'LineWidth', LineWidth,'MarkerSize', markerSize);
         lgnd = legend('Voluntary condition','Involuntary condition', 'Location', 'northwest');
     end
     
@@ -42,7 +42,7 @@ elseif experiment == 2
     if flag == 1
 
         errorbar(mean( reshape(arrAxes(1,:),sizeBin, []),1), mean(reshape(arrBehavior(1,:),sizeBin,[]),1), std(reshape(arrBehavior(1,:),sizeBin,[]),1),'Color', [0 0 250/255],'LineStyle','none', 'Marker', '.', 'LineWidth', LineWidth,'MarkerSize', markerSize);
-        errorbar(mean( reshape(arrAxes(2,:),SizeBin, []),1), mean(reshape(arrBehavior(2,:),sizeBin,[]),1), std(reshape(arrBehavior(2,:),sizeBin,[]),1),'Color', [0 140/255 255/255],'LineStyle','none', 'Marker', '.', 'LineWidth', LineWidth, 'MarkerSize',markerSize) ;
+        errorbar(mean( reshape(arrAxes(2,:),sizeBin, []),1), mean(reshape(arrBehavior(2,:),sizeBin,[]),1), std(reshape(arrBehavior(2,:),sizeBin,[]),1),'Color', [0 140/255 255/255],'LineStyle','none', 'Marker', '.', 'LineWidth', LineWidth, 'MarkerSize',markerSize) ;
         errorbar(mean( reshape(arrAxes(3,:),sizeBin, []),1), mean(reshape(arrBehavior(3,:),sizeBin,[]),1), std(reshape(arrBehavior(3,:),sizeBin,[]),1),'Color', [0 240/255 255/255],'LineStyle','none', 'Marker', '.', 'LineWidth', LineWidth,'MarkerSize',markerSize) ;
     end
     
