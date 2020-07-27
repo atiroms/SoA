@@ -24,11 +24,11 @@ tAp=0; dist_tAtO=250; tOp=tAp+dist_tAtO;            % Actual physical stimulus t
 
 for CondBO = 1:numCond
     % Initialize baseline parameters with reported empirical data
-    [muA, sigmaA, mu0, sigma0] = soa_IBexperiment(ExpR, CondBO);
+    [muA, sigmaA, muO, sigmaO] = soa_IBexperiment(ExpR, CondBO);
     
     % Generate from Gaussian distributions
     Vec_taoA = normrnd(tAp + muA, sigmaA, [1 taoInstances]);    % Alterntaive: sigmaA .* randn(1,numInstances) + (tAp + muA);
-    Vec_taoO = normrnd(tOp + mu0, sigma0, [1 taoInstances]);    % sSigmaO .* randn(1,numInstances) + (tOp + muO);
+    Vec_taoO = normrnd(tOp + muO, sigmaO, [1 taoInstances]);    % sigmaO .* randn(1,numInstances) + (tOp + muO);
 
     %{
     % Check the generated data
@@ -48,8 +48,8 @@ for CondBO = 1:numCond
 
     % Store generated simulation data
     fprintf ('\n============== tao DataSet Exp %d Cond %d ================\n', ExpR, CondBO);
-    fprintf('taoA [%0.2f, %?@.2f] taoO [%0.2f, %@.2f]\n', taoA_min, taoA_max, taoO_min, taoO_max);
-    fprintf('tao statistics: %O@.2f (%@.2f)\t %@.2f (%@.2f)\n', uVectaoA, stdVectaoA, uVectaoO, stdVectaoO);
+    fprintf('taoA [%0.2f, %0.2f] taoO [%0.2f, %0.2f]\n', taoA_min, taoA_max, taoO_min, taoO_max);
+    fprintf('tao statistics: %0.2f (%0.2f)\t %0.2f (%0.2f)\n', uVectaoA, stdVectaoA, uVectaoO, stdVectaoO);
     fprintf('taoA elements: %d taoO elements: %d\n', sizeVec_taoA, sizeVec_taoO);
     fnametaoA = sprintf ('Exp%dCond%d_Vec_taoA.csv',ExpR, CondBO) ;
     fnametaoO = sprintf ('Exp%dCond%d_Vec_taoO.csv',ExpR, CondBO) ;

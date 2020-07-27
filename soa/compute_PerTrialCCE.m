@@ -15,7 +15,7 @@ sizeBin = 200;
 
 % Simulation Conditions
 taoInstances = 35000;   % Number of taoA and taoO instances to be generated
-ExpR = 1; numCond = 3;  % Experimental set-up
+ExpR = 2; numCond = 3;  % Experimental set-up
                         % Haggard et al. (2002): ExpR = 1; NumCond = 3; (Vol, Invol, Sham)
                         % Wolpe et al. (2013) : ExpR = 2; NumCond = 3; (Low, Int, High)
 tAp=0; dist_tAtO=250; tOp=tAp+dist_tAtO; % Actual physical stimulus timings

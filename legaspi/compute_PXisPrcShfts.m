@@ -6,7 +6,7 @@
 % Objective: Fit Haggard et al's data to find the optimal value for the free parameter P(Xi=1),
 %               muAO is 230ms and sigmaAO 1s 10ms.
 %            Plot the action and outcome perceptual shifts given P(Xi=1) in the range
-%               [@.0,1.0@] with @.1 increments
+%               [0.0,1.0] with 0.1 increments
 
 % Cleaners
 clear           % clears all variables from the workspace
@@ -106,7 +106,7 @@ for CondBO = 1:numCond
         indxPXi1 = indxPXi1 - 1;
 
         arrPrcShftA(CondBO, indxPXi1) = uPrcShftA;
-        arrPrcShftO(CondBO, indxPXi1) = uPrcShftA;
+        arrPrcShftO(CondBO, indxPXi1) = uPrcShftO;
         arrAOBinding(CondBO, indxPXi1) = uAOBinding;
     end
 fprintf('\n');
@@ -115,16 +115,16 @@ end
 % Plot and store the perceptual shifts and action-outcome binding
 
 soa_plotPrcShts(ExpR, arrPrcShftA, arrPrcShftO, arrPXi1, fontsize);
-fnamePrcShft = sprintf ('Exp%d_PXisPrcShfts.png',ExpR);
+fnamePrcShft = sprintf ('Exp%d_PXisPrcShfts1.png',ExpR);
 saveas(gcf, fnamePrcShft) ;
 soa_plotBehaviors(ExpR, arrAOBinding, arrPXi1, fontsize, 1);
-fnamePrcShft = sprintf ('Exp%d_PXisPrcShfts.png',ExpR);
+fnamePrcShft = sprintf ('Exp%d_PXisPrcShfts2.png',ExpR);
 saveas(gcf, fnamePrcShft);
 
 % Store the perceptual shifts
 
 fnamePrcShftA = sprintf ('Exp%d_arrPrcShftA.csv',ExpR);
-fnamePrcShftO = sprintf ('Exp%d_arrPrcShft0.csv',ExpR) ;
+fnamePrcShftO = sprintf ('Exp%d_arrPrcShftO.csv',ExpR) ;
 dlmwrite(fnamePrcShftA, arrPrcShftA, 'delimiter',',');
 dlmwrite(fnamePrcShftO, arrPrcShftO, 'delimiter',',');
 

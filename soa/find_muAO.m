@@ -20,7 +20,7 @@ tAp=0; dist_tAtO=250; tOp=tAp+dist_tAtO;           % Actual physical stimulus ti
 sigmaAO = 10;                                       % To obtain discernible perceptual shifts, sigmaAOQ should be small
 for muAO = [190 200 210 220 230 240 250]
     
-    fprintf('Action and outcome perceptual shifts per condition given muA0=%d\n', muAO);
+    fprintf('Action and outcome perceptual shifts per condition given muAO=%d\n', muAO);
     sumError = 0;
     
     for CondBO = 1:numCond
@@ -37,7 +37,7 @@ for muAO = [190 200 210 220 230 240 250]
         % Compute for sigma_Tot
         sigmaTot2 = sigmaA^2 + sigmaO^2 + sigmaAO^2;
 
-        % Compute the action and oputcome perceptual shifts
+        % Compute the action and outcome perceptual shifts
         Vec_PrcShftA = (sigmaA^2 / sigmaTot2) * (Vec_taoO - Vec_taoA - muAO);
         Vec_PrcShftO = - (sigmaO^2 / sigmaTot2) * (Vec_taoO - Vec_taoA - muAO);
         uVec_PrcShftA = mean(Vec_PrcShftA); sdVec_PrcShftA = std(Vec_PrcShftA);

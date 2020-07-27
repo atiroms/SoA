@@ -20,7 +20,7 @@ taoInstances = 35000;                           % Number of taoA and taoO instan
 ExpR = 1; numCond = 3;                          % Experimental set-up
                                                 % Haggard et al. (2002): ExpR = 1; NumCond = 3; (Vol, Invol, Sham)
                                                 % Wolpe et al. (2013) : ExpR = 2; NumCond = 3; (Low, Int, High)
-tAp=0; dist_tAtO=250; tOp=tAp+dist_tAtO;       % Actual physical stimulus timings
+tAp=0; dist_tAtO=250; tOp=tAp+dist_tAtO;        % Actual physical stimulus timings
 
 % Optimal condition-independent parameters
 muAO = 230;
@@ -69,7 +69,7 @@ for CondBO = 1:numCond
         
         uCCE = mean(Vec_CCE(1,:)); sdCCE = std(Vec_CCE(1,:));
         fprintf('Condition %d\t P(Xi=1): %0.2f\n', CondBO, PXi_1);
-        fprintf('CCE Åe\t %0.2e(%0.2e)\n',  uCCE, sdCCE);
+        fprintf('CCE     :\t %0.2e(%0.2e)\n',  uCCE, sdCCE);
         indxPXi1 = indxPXi1 - 1;
         arrCCE(CondBO, indxPXi1) = uCCE;
     end
