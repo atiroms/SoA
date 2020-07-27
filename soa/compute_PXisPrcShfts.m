@@ -33,6 +33,7 @@ T = 250;                                    % Large enough but finite constant
 
 % Data Matrices
 LB = 0.0; INC = 0.1; UB = 1.0;
+% LB = 0.2; INC = 0.1; UB = 0.6;
 arrPXi1 = LB: INC:UB;
 size_pXi1 = numel(arrPXi1);
 arrPrcShftA = zeros(numCond,size_pXi1);
@@ -86,6 +87,12 @@ for CondBO = 1:numCond
             Vec_AOBinding(1, indx_tao) = 250 + (tOhat-taoO) - (tAhat-taoA);
         end
         
+        % Added by SM
+        if CondBO==1
+            figure(indxPXi1)
+            histogram(Vec_AOBinding,30)
+        end
+       
         uPrcShftA = mean(Vec_PrcShftA(:)); sdPrcShftA = std(Vec_PrcShftA(:));
         uPrcShftO = mean(Vec_PrcShftO(:)); sdPrcShftO = std(Vec_PrcShftO(:));
         uAOBinding = mean(Vec_AOBinding(:)); sdAOBinding = std(Vec_AOBinding(:));
