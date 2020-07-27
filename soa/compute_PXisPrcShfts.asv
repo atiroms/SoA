@@ -146,6 +146,10 @@ for CondBO = 1:numCond
 fprintf('\n');
 end
 
+arrPrcShftA(CondBO,:) = uPrcShftA;
+arrPrcShftO(CondBO,:) = uPrcShftO;
+arrAOBinding(CondBO,:) = uAOBinding;
+
 % Plot and store the perceptual shifts and action-outcome binding
 
 soa_plotPrcShts(ExpR, arrPrcShftA, arrPrcShftO, arrPXi1, fontsize);
