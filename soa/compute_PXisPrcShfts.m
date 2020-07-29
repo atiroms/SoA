@@ -36,6 +36,8 @@ LB = 0.0; INC = 0.1; UB = 1.0;
 % LB = 0.2; INC = 0.1; UB = 0.6;
 arrPXi1 = LB: INC:UB;
 size_pXi1 = numel(arrPXi1);
+
+% matrices for output
 arrPrcShftA = zeros(numCond,size_pXi1);
 arrPrcShftO = zeros(numCond,size_pXi1);
 arrAOBinding = zeros(numCond,size_pXi1);
@@ -46,17 +48,25 @@ hm_inc = 10;
 
 for CondBO = 1:numCond
     % Read from files taoA and taoO values derived from a Gaussian distribution
+    % These are tau A/O (noisy sensory inputs) in the article
+    % Used in Monte Carlo simulation to update prior distribution of
+    % actual action and outcome timings modeled as vetroloquism effect
+    % CondBO = 1 (voluntary) is action-only baseline condition
+    % outcome prior distribution uses outcome-only baselinecondition
     fnametaoA = sprintf ('Exp%dCond%d_Vec_taoA.csv',ExpR, CondBO) ;
     fnametaoO = sprintf ('Exp%dCond%d_Vec_taoO.csv',ExpR, CondBO);
     Vec_taoA = dlmread(fnametaoA) ;
     Vec_taoO = dlmread(fnametaoO) ;
     
     % added by SM
+    % Monte Carlo results of posterior distribution
     Mat_PrcShftA = soa_InitMatrix(size_pXi1,taoInstances);
     Mat_PrcShftO = soa_InitMatrix(size_pXi1,taoInstances);
     Mat_AOBinding = soa_InitMatrix(size_pXi1,taoInstances);
     
     indxPXi1 = size_pXi1;
+    
+    % Loop over prior distribution of Xi (prior for causality)
     for PXi_1 = UB:-INC:LB
         PXi_0 = 1 - PXi_1;
         
@@ -74,13 +84,18 @@ for CondBO = 1:numCond
             [muA, sigmaA, muO, sigmaO] = soa_IBexperiment(ExpR, CondBO);
             
             % Compute for the posterior-ratio
+            % these calculation appear in Methods
             Z1 = sqrt(2*pi)*sigmaAO*T;
             Z0 = T^2;
-            Theta = log( (PXi_1*Z0)/(PXi_0*Z1));
+            Theta = log((PXi_1*Z0)/(PXi_0*Z1));
             sigmaTot2 = sigmaA^2 + sigmaO^2 + sigmaAO^2;
-            r = exp(Theta - ((taoO-taoA-muAO)^2/(2*sigmaTot2) ));
+            r = exp(Theta - ((taoO-taoA-muAO)^2/(2*sigmaTot2)));
             
             % Compute for strength of temporal binding
+            % Here, MAP estimates (tAhat, tOhat, Xihat) are calculated
+            % in classic Bayesian inference, Xi posterior is expressed as
+            % probability distribution as in prior, but binary MAP estimate
+            % is used instead
             if r>1      % Causal
                 tAhat = taoA + (sigmaA^2/sigmaTot2)*(taoO-taoA-muAO) ;
                 tOhat = taoO - (sigmaO^2/sigmaTot2)*(taoO-taoA-muAO) ;
@@ -91,11 +106,15 @@ for CondBO = 1:numCond
                 Xihat=0;
             end
             
-            % Vec_PrcShftA(1, indx_tao) = tAhat - taoA;
-            % Vec_PrcShftO(1, indx_tao) = tOhat - taoO;
-            % Vec_AOBinding(1, indx_tao) = 250 + (tOhat-taoO) - (tAhat-taoA);
+            %{
+            Vec_PrcShftA(1, indx_tao) = tAhat - taoA;
+            Vec_PrcShftO(1, indx_tao) = tOhat - taoO;
+            Vec_AOBinding(1, indx_tao) = 250 + (tOhat-taoO) - (tAhat-taoA);
+            %}
             
             % Added by SM
+            % Record Mote Carlo results of posterior in perceived action
+            % and outcome timing results
             Mat_PrcShftA(indxPXi1,indx_tao) = tAhat - taoA;
             Mat_PrcShftO(indxPXi1,indx_tao) = tOhat - taoO;
             Mat_AOBinding(indxPXi1,indx_tao) = 250 + (tOhat-taoO) - (tAhat-taoA);
@@ -110,18 +129,27 @@ for CondBO = 1:numCond
         end
         %}
         
-        % uPrcShftA = mean(Vec_PrcShftA(:)); sdPrcShftA = std(Vec_PrcShftA(:));
-        % uPrcShftO = mean(Vec_PrcShftO(:)); sdPrcShftO = std(Vec_PrcShftO(:));
-        % uAOBinding = mean(Vec_AOBinding(:)); sdAOBinding = std(Vec_AOBinding(:));
+        %{
+        uPrcShftA = mean(Vec_PrcShftA(:)); sdPrcShftA = std(Vec_PrcShftA(:));
+        uPrcShftO = mean(Vec_PrcShftO(:)); sdPrcShftO = std(Vec_PrcShftO(:));
+        uAOBinding = mean(Vec_AOBinding(:)); sdAOBinding = std(Vec_AOBinding(:));
+        %}
         
         % Added by SM
+        % Mean and SD of perceived shifts in action and outcome timings (means are used for article figures)
         uPrcShftA = mean(Mat_PrcShftA(indxPXi1,:)); sdPrcShftA = std(Mat_PrcShftA(indxPXi1,:));
         uPrcShftO = mean(Mat_PrcShftO(indxPXi1,:)); sdPrcShftO = std(Mat_PrcShftO(indxPXi1,:));
         uAOBinding = mean(Mat_AOBinding(indxPXi1,:)); sdAOBinding = std(Mat_AOBinding(indxPXi1,:));
         
+        % Update matrices for graphical output
+        arrPrcShftA(CondBO, indxPXi1) = uPrcShftA;
+        arrPrcShftO(CondBO, indxPXi1) = uPrcShftO;
+        arrAOBinding(CondBO, indxPXi1) = uAOBinding;
+        
         % Compute for model estimation errors given the reported empirical results
         [targPrcShftA, targPrcShftO] = soa_IBTargets(ExpR,CondBO) ;
 
+        % Calculation for command window output
         ruVec_PrcShftA = round(uPrcShftA) ;
         ruVec_PrcShftO = round(uPrcShftO);
         errPrcShftA = abs(ruVec_PrcShftA - targPrcShftA);
@@ -134,17 +162,18 @@ for CondBO = 1:numCond
 
         % indxPXi1 = indxPXi1 - 1;
 
-        arrPrcShftA(CondBO, indxPXi1) = uPrcShftA;
-        arrPrcShftO(CondBO, indxPXi1) = uPrcShftO;
-        arrAOBinding(CondBO, indxPXi1) = uAOBinding;
+
         
         indxPXi1 = indxPXi1 - 1;
-    end
+    end % end of looping over P(Xi)
     
     % Added by SM
+    % Bin posterior distributions of perceived action/outcome timing shifts
+    % and A-O binding
+    
     
 fprintf('\n');
-end
+end % end of looping over experiment conditions (voluntary, etc...)
 
 % Plot and store the perceptual shifts and action-outcome binding
 
