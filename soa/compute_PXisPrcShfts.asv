@@ -61,8 +61,8 @@ for CondBO = 1:numCond
     % added by SM
     % Monte Carlo results of posterior distribution
     Mat_PrcShftA = soa_InitMatrix(2,0);
-    Mat_PrcShftO = soa_InitMatrix(2,0);
-    Mat_AOBinding = soa_InitMatrix(2,0);
+    Mat_PrcShftO = soa_InitMatrix(size_pXi1,taoInstances);
+    Mat_AOBinding = soa_InitMatrix(size_pXi1,taoInstances);
     
     indxPXi1 = size_pXi1;
     
@@ -106,20 +106,18 @@ for CondBO = 1:numCond
                 Xihat=0;
             end
             
-            
+            %{
             Vec_PrcShftA(1, indx_tao) = tAhat - taoA;
             Vec_PrcShftO(1, indx_tao) = tOhat - taoO;
             Vec_AOBinding(1, indx_tao) = 250 + (tOhat-taoO) - (tAhat-taoA);
-            
+            %}
             
             % Added by SM
             % Record Mote Carlo results of posterior in perceived action
             % and outcome timing results
-            %{
             Mat_PrcShftA(indxPXi1,indx_tao) = tAhat - taoA;
             Mat_PrcShftO(indxPXi1,indx_tao) = tOhat - taoO;
             Mat_AOBinding(indxPXi1,indx_tao) = 250 + (tOhat-taoO) - (tAhat-taoA);
-            %}
         end
         
         %{
@@ -131,17 +129,17 @@ for CondBO = 1:numCond
         end
         %}
         
+        %{
         uPrcShftA = mean(Vec_PrcShftA(:)); sdPrcShftA = std(Vec_PrcShftA(:));
         uPrcShftO = mean(Vec_PrcShftO(:)); sdPrcShftO = std(Vec_PrcShftO(:));
         uAOBinding = mean(Vec_AOBinding(:)); sdAOBinding = std(Vec_AOBinding(:));
+        %}
         
         % Added by SM
         % Mean and SD of perceived shifts in action and outcome timings (means are used for article figures)
-        %{
         uPrcShftA = mean(Mat_PrcShftA(indxPXi1,:)); sdPrcShftA = std(Mat_PrcShftA(indxPXi1,:));
         uPrcShftO = mean(Mat_PrcShftO(indxPXi1,:)); sdPrcShftO = std(Mat_PrcShftO(indxPXi1,:));
         uAOBinding = mean(Mat_AOBinding(indxPXi1,:)); sdAOBinding = std(Mat_AOBinding(indxPXi1,:));
-        %}
         
         % Update matrices for graphical output
         arrPrcShftA(CondBO, indxPXi1) = uPrcShftA;
