@@ -45,7 +45,6 @@ arrAOBinding = zeros(numCond,size_pXi1);
 % Visualization params added by SM
 hm_inc = 10;
 
-
 for CondBO = 1:numCond
     % Read from files taoA and taoO values derived from a Gaussian distribution
     % These are tau A/O (noisy sensory inputs) in the article
@@ -106,42 +105,26 @@ for CondBO = 1:numCond
                 Xihat=0;
             end
             
-            
+            % Record Mote Carlo results of posterior in perceived action
+            % and outcome timing results            
             Vec_PrcShftA(1, indx_tao) = tAhat - taoA;
             Vec_PrcShftO(1, indx_tao) = tOhat - taoO;
             Vec_AOBinding(1, indx_tao) = 250 + (tOhat-taoO) - (tAhat-taoA);
             
-            
-            % Added by SM
-            % Record Mote Carlo results of posterior in perceived action
-            % and outcome timing results
-            %{
-            Mat_PrcShftA(indxPXi1,indx_tao) = tAhat - taoA;
-            Mat_PrcShftO(indxPXi1,indx_tao) = tOhat - taoO;
-            Mat_AOBinding(indxPXi1,indx_tao) = 250 + (tOhat-taoO) - (tAhat-taoA);
-            %}
         end
         
-        %{
         % Added by SM
-        if CondBO==1
-            figure(indxPXi1)
-            % histogram(Vec_AOBinding,30)
-            histogram(Vec_PrcShftA,30)
-        end
-        %}
+        % Record MAP results for later plotting
+        Vec_temp=zeros(1,taoInstances);
+        Vec_temp(1,1:taoInstances)=PXi_1;
+        Mat_PrcShftA=[Mat_PrcShftA [Vec_temp; Vec_PrcShftA]];
+        Mat_PrcShftO=[Mat_PrcShftO [Vec_temp; Vec_PrcShftO]];
+        Mat_AOBinding=[Mat_AOBinding [Vec_temp; Vec_AOBinding]];
         
+        % Mean and SD of perceived shifts in action and outcome timings (means are used for article figures)
         uPrcShftA = mean(Vec_PrcShftA(:)); sdPrcShftA = std(Vec_PrcShftA(:));
         uPrcShftO = mean(Vec_PrcShftO(:)); sdPrcShftO = std(Vec_PrcShftO(:));
         uAOBinding = mean(Vec_AOBinding(:)); sdAOBinding = std(Vec_AOBinding(:));
-        
-        % Added by SM
-        % Mean and SD of perceived shifts in action and outcome timings (means are used for article figures)
-        %{
-        uPrcShftA = mean(Mat_PrcShftA(indxPXi1,:)); sdPrcShftA = std(Mat_PrcShftA(indxPXi1,:));
-        uPrcShftO = mean(Mat_PrcShftO(indxPXi1,:)); sdPrcShftO = std(Mat_PrcShftO(indxPXi1,:));
-        uAOBinding = mean(Mat_AOBinding(indxPXi1,:)); sdAOBinding = std(Mat_AOBinding(indxPXi1,:));
-        %}
         
         % Update matrices for graphical output
         arrPrcShftA(CondBO, indxPXi1) = uPrcShftA;
@@ -162,17 +145,43 @@ for CondBO = 1:numCond
         fprintf('Error in action perceptual shift: %0.2f\n', errPrcShftA);
         fprintf('Error in outcome perceptual shift: %0.2f\n\n', errPrcShftO);
 
-        % indxPXi1 = indxPXi1 - 1;
-
-
-        
         indxPXi1 = indxPXi1 - 1;
     end % end of looping over P(Xi)
     
     % Added by SM
-    % Bin posterior distributions of perceived action/outcome timing shifts
-    % and A-O binding
+    % 3D histogram of MAP results
+    nbins=50;
     
+    figure
+    min_data=min(Mat_PrcShftA(2,:));
+    max_data=max(Mat_PrcShftA(2,:));
+    width_bin=(max_data-min_data)/nbins;
+    centers_bin=(min_data+width_bin/2):width_bin:(max_data-width_bin/2);
+    hist3(transpose(Mat_PrcShftA),'CdataMode','auto','FaceColor','interp','Ctrs',{LB:INC:UB centers_bin})
+    colorbar
+    xlabel('P(Xi=1)')
+    ylabel('t')
+    
+    figure
+    min_data=min(Mat_PrcShftO(2,:));
+    max_data=max(Mat_PrcShftO(2,:));
+    width_bin=(max_data-min_data)/nbins;
+    centers_bin=(min_data+width_bin/2):width_bin:(max_data-width_bin/2);
+    hist3(transpose(Mat_PrcShftO),'CdataMode','auto','FaceColor','interp','Ctrs',{LB:INC:UB centers_bin})
+    colorbar
+    xlabel('P(Xi=1)')
+    ylabel('t')
+    
+    figure
+    min_data=min(Mat_AOBinding(2,:));
+    max_data=max(Mat_AOBinding(2,:));
+    width_bin=(max_data-min_data)/nbins;
+    centers_bin=(min_data+width_bin/2):width_bin:(max_data-width_bin/2);
+    hist3(transpose(Mat_AOBinding),'CdataMode','auto','FaceColor','interp','Ctrs',{LB:INC:UB centers_bin})
+    colorbar
+    xlabel('P(Xi=1)')
+    ylabel('t')
+
     
 fprintf('\n');
 end % end of looping over experiment conditions (voluntary, etc...)
